@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>학교용 MBTI 테스트</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            padding: 30px;
+        }
+        .question-box {
+            display: none;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #start-btn, .answer-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #result {
+            display: none;
+            font-size: 1.5em;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>학교용 MBTI 테스트</h1>
+    <button id="start-btn">테스트 시작</button>
+
+    <div id="quiz"></div>
+    <div id="result"></div>
+
+    <script>
+        const questions = [
+            { q: "쉬는 시간, 나는 주로?", a: ["친구랑 놀거나 이야기한다", "혼자 조용히 쉰다"], type: ["E", "I"] },
+            { q: "발표 시간! 나는?", a: ["손부터 든다! 말하고 싶어!", "눈 피하며 발표는 피하고 싶어"], type: ["E", "I"] },
+            { q: "과학 시간, 실험을 할 때 나는?", a: ["설명서를 꼼꼼히 읽고 시작", "대충 보고 바로 시도해본다"], type: ["S", "N"] },
+            { q: "수학 문제를 풀 때 나는?", a: ["공식대로 차근차근 푼다", "방법을 스스로 생각해본다"], type: ["S", "N"] },
+            { q: "친구가 속상해할 때 나는?", a: ["함께 공감하며 위로해 준다", "해결 방법부터 같이 찾는다"], type: ["F", "T"] },
+            { q: "단체 활동에서 나는?", a: ["모두가 기분 좋도록 분위기를 본다", "어떻게 하면 잘 끝낼 수 있을지 생각한다"], type: ["F", "T"] },
+            { q: "체험학습 준비할 때 나는?", a: ["미리 짐을 싸두고 준비해둔다", "전날 밤에 후다닥 준비한다"], type: ["J", "P"] },
+            { q: "팀 프로젝트를 할 때 나는?", a: ["역할 분담하고 계획부터 세운다", "일단 해보면서 조정한다"], type: ["J", "P"] },
+            { q: "새로운 악기를 배울 때 나는?", a: ["선생님 설명 듣고 시도한다", "감으로 일단 연주해본다"], type: ["S", "N"] },
+            { q: "소풍을 간다면 나는?", a: ["사진 찍고 친구들과 놀며 에너지 폭발", "한적한 곳에서 풍경을 보며 힐링"], type: ["E", "I"] }
+        ];
+
+        const scores = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+        let current = 0;
+
+        const startBtn = document.getElementById("start-btn");
+        const quizBox = document.getElementById("quiz");
+        const resultBox = document.getElementById("result");
+
+        startBtn.addEventListener("click", () => {
+            startBtn.style.display = "none";
+            showQuestion();
+        });
+
+        function showQuestion() {
+            quizBox.innerHTML = "";
+            if (current >= questions.length) {
+                showResult();
+                return;
+            }
+            const qData = questions[current];
+            const box = document.createElement("div");
+            box.className = "question-box";
+            const qText = document.createElement("p");
+            qText.textContent = qData.q;
+            box.appendChild(qText);
+            qData.a.forEach((answer, i) => {
+                const btn = document.createElement("button");
+                btn.className = "answer-btn";
+                btn.textContent = answer;
+                btn.onclick = () => {
+                    scores[qData.type[i]]++;
+                    current++;
+                    showQuestion();
+                };
+                box.appendChild(btn);
+            });
+            quizBox.appendChild(box);
+            box.style.display = "block";
+        }
+
+        function showResult() {
+            quizBox.style.display = "none";
+            let result = "";
+            result += scores["E"] >= scores["I"] ? "E" : "I";
+            result += scores["S"] >= scores["N"] ? "S" : "N";
+            result += scores["T"] >= scores["F"] ? "T" : "F";
+            result += scores["J"] >= scores["P"] ? "J" : "P";
+
+            const resultText = `당신의 MBTI는 <strong>${result}</strong> 입니다!`;
+            resultBox.innerHTML = resultText;
+            resultBox.style.display = "block";
+        }
+    </script>
+</body>
+</html>
